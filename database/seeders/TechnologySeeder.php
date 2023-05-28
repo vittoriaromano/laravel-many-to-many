@@ -7,6 +7,7 @@ use App\Models\Type;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
+use Faker\Generator as Faker;
 use Illuminate\Support\Str;
 
 class TechnologySeeder extends Seeder
@@ -16,18 +17,16 @@ class TechnologySeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(Faker $faker)
     {
-        $technologies = ['CSS', 'SASS', 'Vanilla JS', 'Vue JS', 'Vite', 'Bootstrap', 'PHP', 'MySQL'];
-
+        
         Schema::disableForeignKeyConstraints();
         Technology::truncate();
         Schema::enableForeignKeyConstraints();
 
-        foreach ($technologies as $technology) {
-
+        for ($i = 0; $i <15; $i++) {
             $technology = new Technology();
-            $technology->name = $technology;
+            $technology->name = $faker->name;
             $technology->slug = Str::slug($technology->name);
             $technology->save();
         }
