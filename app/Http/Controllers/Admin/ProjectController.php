@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Project;
 use App\Models\Type;
+use App\Models\Technology;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
@@ -31,7 +32,8 @@ class ProjectController extends Controller
     public function create()
     {
         $types = Type::all();
-        return view('admin.projects.create', compact('types'));
+        $technologies = Technology::all();
+        return view('admin.projects.create', compact('types', 'technologies'));
     }
 
     /**
@@ -51,6 +53,9 @@ class ProjectController extends Controller
         $project->completed = $request['completed'] ? 1 : 0;
         $project->image = Storage::put('uploads', $data['image']);
         
+        if (isset($data['technologies'])) { 
+            $project->technologies()->sync($data['technologies']);
+        }
         $project->save();
         return to_route('admin.projects.index')->with('message','Project created');
     }
@@ -75,7 +80,9 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $types = Type::all();
-        return view('admin.projects.edit', compact('project'), compact('types'));
+        $technologies = Technology::all();
+
+        return view('admin.projects.edit', compact('project', 'types', 'technologies'));
     }
 
     /**
@@ -99,8 +106,11 @@ class ProjectController extends Controller
             $project->image = Storage::put('uploads', $data['image']);
 
         }
+        $technologies = isset($data['technologies']) ? $data['technologies'] : [];
+        $project->technologies()->sync($technologies);
+
         $project->update($data);
-        return to_route('admin.projects.show', $project->id)->with('message', 'Updated!');
+        return to_route('admin.projects.show', $project->id)->with('message', 'Project updated!');
     }
 
     /**
@@ -112,6 +122,6 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         $project->delete();
-        return to_route('admin.projects.index');
+        return to_route('admin.projects.index')->with('message', 'Project deleted!');
     }
 }

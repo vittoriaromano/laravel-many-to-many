@@ -28,10 +28,10 @@
                             </a>
                         </th>
                         <td>{{ $project->version }}</td>
-                        <td>{{ $project->description }}€</td>
+                        <td>{{ $project->description }}</td>
                         <td>{{ $project->start_date }}</td>
                         <td>{{ $project->upload_date }}</td>
-                        <td>{{ $project->value }}</td>
+                        <td>{{ $project->value }}$</td>
                         <td>{{ $project->completed == 0 ? 'no' : 'yes' }}</td>
                         <td>
                             <form action="{{ route('admin.projects.destroy', $project->id) }}" method="POST">
